@@ -1,8 +1,8 @@
 package geoLocation;
 
 public class GePoint {
-    private double latitude; // Î³¶È×ø±ê
-    private double longtitude; // ¾­¶È×ø±ê
+    private double latitude; // ÃŽÂ³Â¶ÃˆÃ—Ã¸Â±Ãª
+    private double longtitude; // Â¾Â­Â¶ÃˆÃ—Ã¸Â±Ãª
 public GePoint() {
 }
 public GePoint(double latitude, double longtitude) {
