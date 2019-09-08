@@ -37,15 +37,15 @@ public class ReadTxtByCode {
 	          loc++;
 	          if (read >= 0xF0)
 	            break;
-	          if (0x80 <= read && read <= 0xBF)	//µ¥¶À³öÏÖBFÒÔÏÂµÄ£¬Ò²ËãÊÇGBK
+	          if (0x80 <= read && read <= 0xBF)	//å•ç‹¬å‡ºçŽ°BFä»¥ä¸‹çš„ï¼Œä¹Ÿç®—æ˜¯GBK
 	            break;
 	          if (0xC0 <= read && read <= 0xDF) {
 	            read = bis.read();
-	            if (0x80 <= read && read <= 0xBF) //Ë«×Ö½Ú (0xC0 - 0xDF) (0x80 - 0xBF),Ò²¿ÉÄÜÔÚGB±àÂëÄÚ
+	            if (0x80 <= read && read <= 0xBF) //åŒå­—èŠ‚ (0xC0 - 0xDF) (0x80 - 0xBF),ä¹Ÿå¯èƒ½åœ¨GBç¼–ç å†…
 	              continue;
 	            else
 	              break;
-	          }	else if	(0xE0 <= read && read <= 0xEF) { //Ò²ÓÐ¿ÉÄÜ³ö´í£¬µ«ÊÇ¼¸ÂÊ½ÏÐ¡
+	          }	else if	(0xE0 <= read && read <= 0xEF) { //ä¹Ÿæœ‰å¯èƒ½å‡ºé”™ï¼Œä½†æ˜¯å‡ çŽ‡è¾ƒå°
 	        	  read = bis.read();
 	        	  if (0x80 <= read && read <= 0xBF) {
 	        		  read = bis.read();
@@ -75,8 +75,8 @@ public class ReadTxtByCode {
 	  
 	private static String getEncode(int flag1, int flag2, int flag3) {
 	    String encode="";
-	    // txtÎÄ¼þµÄ¿ªÍ·»á¶à³ö¼¸¸ö×Ö½Ú£¬·Ö±ðÊÇFF¡¢FE£¨Unicode£©,
-	    // FE¡¢FF£¨Unicode big endian£©,EF¡¢BB¡¢BF£¨UTF-8£©
+	    // txtæ–‡ä»¶çš„å¼€å¤´ä¼šå¤šå‡ºå‡ ä¸ªå­—èŠ‚ï¼Œåˆ†åˆ«æ˜¯FFã€FEï¼ˆUnicodeï¼‰,
+	    // FEã€FFï¼ˆUnicode big endianï¼‰,EFã€BBã€BFï¼ˆUTF-8ï¼‰
 	    if (flag1 == 255 && flag2 == 254) {
 	    	encode="Unicode";
 	    } else if (flag1 == 254 && flag2 == 255) {
@@ -84,32 +84,32 @@ public class ReadTxtByCode {
 	    } else if (flag1 == 239 && flag2 == 187 && flag3 == 191) {
 	    	encode="UTF8";
 	    } else{
-	    	encode="asci";// ASCIIÂë
+	    	encode="asci";// ASCIIç 
 	    }
 	    return encode;
 	}
 	
 	
 	/**
-	   * Í¨¹ýÂ·¾¶»ñÈ¡ÎÄ¼þµÄÄÚÈÝ£¬Õâ¸ö·½·¨ÒòÎªÓÃµ½ÁË×Ö·û´®×÷ÎªÔØÌå£¬ÎªÁËÕýÈ·¶ÁÈ¡ÎÄ¼þ£¨²»ÂÒÂë£©£¬Ö»ÄÜ¶ÁÈ¡ÎÄ±¾ÎÄ¼þ£¬°²È«·½·¨£¡
+	   * é€šè¿‡è·¯å¾„èŽ·å–æ–‡ä»¶çš„å†…å®¹ï¼Œè¿™ä¸ªæ–¹æ³•å› ä¸ºç”¨åˆ°äº†å­—ç¬¦ä¸²ä½œä¸ºè½½ä½“ï¼Œä¸ºäº†æ­£ç¡®è¯»å–æ–‡ä»¶ï¼ˆä¸ä¹±ç ï¼‰ï¼Œåªèƒ½è¯»å–æ–‡æœ¬æ–‡ä»¶ï¼Œå®‰å…¨æ–¹æ³•ï¼
 	   */
 	public static String readFile(String path){
 	    String data = null;
-	    // ÅÐ¶ÏÎÄ¼þÊÇ·ñ´æÔÚ
+	    // åˆ¤æ–­æ–‡ä»¶æ˜¯å¦å­˜åœ¨
 	    File file =	new File(path);
 	    if(!file.exists()){
 	    	return data;
 	    }
-	    // »ñÈ¡ÎÄ¼þ±àÂë¸ñÊ½
+	    // èŽ·å–æ–‡ä»¶ç¼–ç æ ¼å¼
 	    String code = getFileEncode(path);
 	    InputStreamReader isr =	null;
-	    try{ // ¸ù¾Ý±àÂë¸ñÊ½½âÎöÎÄ¼þ
-	    	if("asci".equals(code)){ // ÕâÀï²ÉÓÃGBK±àÂë£¬¶ø²»ÓÃ»·¾³±àÂë¸ñÊ½£¬ÒòÎª»·¾³Ä¬ÈÏ±àÂë²»µÈÓÚ²Ù×÷ÏµÍ³±àÂë
+	    try{ // æ ¹æ®ç¼–ç æ ¼å¼è§£æžæ–‡ä»¶
+	    	if("asci".equals(code)){ // è¿™é‡Œé‡‡ç”¨GBKç¼–ç ï¼Œè€Œä¸ç”¨çŽ¯å¢ƒç¼–ç æ ¼å¼ï¼Œå› ä¸ºçŽ¯å¢ƒé»˜è®¤ç¼–ç ä¸ç­‰äºŽæ“ä½œç³»ç»Ÿç¼–ç 
 	    		// code = System.getProperty("file.encoding");
 	    		code = "GBK";
 	    	}
 	    	isr = new InputStreamReader(new	FileInputStream(file),code);
-	    	// ¶ÁÈ¡ÎÄ¼þÄÚÈÝ
+	    	// è¯»å–æ–‡ä»¶å†…å®¹
 	    	int	length = -1;
 	    	char[] buffer =	new char[1024];
 	    	StringBuffer sb = new StringBuffer();
