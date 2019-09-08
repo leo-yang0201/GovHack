@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 
 public class WriteToTxt {
-	//将读取的关键词写入记事本
+	//灏嗚鍙栫殑鍏抽敭璇嶅啓鍏ヨ浜嬫湰
 	public static void contentToTxt(String filePath, String content) {
         try{
             BufferedWriter writer = new BufferedWriter(new FileWriter(new File(filePath),true));
